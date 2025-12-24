@@ -45,7 +45,7 @@ function App() {
   const [isGameActive, setIsGameActive] = useState(false);
   
   // Estados do CardGenerator preservados entre abas
-  const [generatedCards, setGeneratedCards] = useState<BingoCard[]>([]);
+  const [generatedCards, setGeneratedCards] = useState<Omit<BingoCard, 'userId'>[]>([]);
   
   // Estado de autenticação
   const [user, setUser] = useState<User | null>(null);
@@ -81,9 +81,11 @@ function App() {
   }, [user]);
   
   const loadCards = async () => {
+    if (!user) return;
+    
     try {
       setIsLoading(true);
-      const loadedCards = await getAllCards();
+      const loadedCards = await getAllCards(user.uid);
       setCards(loadedCards);
       // Inicializa o contador de IDs baseado nas cartelas existentes
       initializeCardIdCounter(loadedCards);
@@ -95,10 +97,18 @@ function App() {
     }
   };
   
-  const handleCardsGenerated = async (newCards: BingoCard[]) => {
+  const handleCardsGenerated = async (newCards: Omit<BingoCard, 'userId'>[]) => {
+    if (!user) return;
+    
     try {
-      await saveCards(newCards);
-      setCards([...cards, ...newCards]);
+      // Adiciona userId às cartelas
+      const cardsWithUserId = newCards.map(card => ({
+        ...card,
+        userId: user.uid
+      })) as BingoCard[];
+      
+      await saveCards(cardsWithUserId);
+      setCards([...cards, ...cardsWithUserId]);
       setGeneratedCards(newCards);
       showNotification(`${newCards.length} cartelas geradas e salvas com sucesso!`, 'success');
     } catch (error) {
@@ -108,8 +118,10 @@ function App() {
   };
   
   const handleRegisterCard = async (cardId: string, playerName: string) => {
+    if (!user) return;
+    
     try {
-      await registerCard(cardId, playerName);
+      await registerCard(cardId, playerName, user.uid);
       await loadCards(); // Recarrega as cartelas
       showNotification('Cartela registrada com sucesso!', 'success');
     } catch (error) {
@@ -119,8 +131,10 @@ function App() {
   };
   
   const handleUnregisterCard = async (cardId: string) => {
+    if (!user) return;
+    
     try {
-      await unregisterCard(cardId);
+      await unregisterCard(cardId, user.uid);
       await loadCards();
       showNotification('Registro removido com sucesso!', 'success');
     } catch (error) {
@@ -144,13 +158,15 @@ function App() {
   };
   
   const handleResetAllCards = async () => {
+    if (!user) return;
+    
     if (
       confirm(
-        'ATENÇÃO: Isso irá deletar TODAS as cartelas do sistema. Deseja continuar?'
+        'ATENÇÃO: Isso irá deletar TODAS as suas cartelas. Deseja continuar?'
       )
     ) {
       try {
-        await deleteAllCards();
+        await deleteAllCards(user.uid);
         setCards([]);
         showNotification('Todas as cartelas foram deletadas.', 'success');
       } catch (error) {

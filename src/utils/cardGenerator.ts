@@ -21,14 +21,14 @@ export function resetCardIdCounter(startFrom: number = 1): void {
 /**
  * Define o próximo ID baseado nas cartelas existentes
  */
-export function initializeCardIdCounter(existingCards: BingoCard[]): void {
+export function initializeCardIdCounter(existingCards: Partial<BingoCard>[]): void {
   if (existingCards.length === 0) {
     cardIdCounter = 1;
     return;
   }
   
   const maxId = existingCards.reduce((max, card) => {
-    const id = parseInt(card.id);
+    const id = parseInt(card.id || '0');
     return isNaN(id) ? max : Math.max(max, id);
   }, 0);
   
@@ -79,9 +79,10 @@ function generateUniqueRandomNumbers(
 /**
  * Gera uma única cartela de Bingo
  * @param config Configuração do jogo
- * @returns BingoCard
+ * @param userId ID do usuário (será adicionado no App.tsx)
+ * @returns BingoCard (sem userId, que será adicionado depois)
  */
-export function generateBingoCard(config: GameConfig): BingoCard {
+export function generateBingoCard(config: GameConfig): Omit<BingoCard, 'userId'> {
   const { gridSize, freeCenter } = config;
   const grid: number[][] = [];
   
@@ -119,13 +120,13 @@ export function generateBingoCard(config: GameConfig): BingoCard {
  * Gera múltiplas cartelas de Bingo
  * @param count Número de cartelas a gerar
  * @param config Configuração do jogo
- * @returns Array de BingoCard
+ * @returns Array de BingoCard (sem userId)
  */
 export function generateBingoCards(
   count: number,
   config: GameConfig
-): BingoCard[] {
-  const cards: BingoCard[] = [];
+): Omit<BingoCard, 'userId'>[] {
+  const cards: Omit<BingoCard, 'userId'>[] = [];
   
   for (let i = 0; i < count; i++) {
     cards.push(generateBingoCard(config));

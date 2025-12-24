@@ -2,7 +2,7 @@
 import { BingoCard as BingoCardType } from '../types';
 
 interface BingoCardProps {
-  card: BingoCardType;
+  card: Omit<BingoCardType, 'userId'> | BingoCardType;
   markedNumbers?: Set<number>;
   showId?: boolean;
   compact?: boolean;

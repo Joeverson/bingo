@@ -8,10 +8,10 @@ import { PrintableCards } from './PrintableCards';
 import { useReactToPrint } from 'react-to-print';
 
 interface CardGeneratorProps {
-  onCardsGenerated: (cards: BingoCardType[]) => void;
+  onCardsGenerated: (cards: Omit<BingoCardType, 'userId'>[]) => void;
   gameConfig: GameConfig;
-  generatedCards: BingoCardType[];
-  setGeneratedCards: (cards: BingoCardType[]) => void;
+  generatedCards: Omit<BingoCardType, 'userId'>[];
+  setGeneratedCards: (cards: Omit<BingoCardType, 'userId'>[]) => void;
 }
 
 export const CardGenerator: React.FC<CardGeneratorProps> = ({

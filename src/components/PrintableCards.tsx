@@ -4,14 +4,14 @@ import { BingoCard as BingoCardType, PrintLayout } from '../types';
 import { BingoCard } from './BingoCard';
 
 interface PrintableCardsProps {
-  cards: BingoCardType[];
+  cards: (Omit<BingoCardType, 'userId'> | BingoCardType)[];
   layout: PrintLayout;
 }
 
 export const PrintableCards = forwardRef<HTMLDivElement, PrintableCardsProps>(
   ({ cards, layout }, ref) => {
     const cardsPerPage = layout;
-    const pages: BingoCardType[][] = [];
+    const pages: (Omit<BingoCardType, 'userId'> | BingoCardType)[][] = [];
     
     // Divide as cartelas em páginas
     for (let i = 0; i < cards.length; i += cardsPerPage) {

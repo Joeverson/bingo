@@ -109,6 +109,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           <p className="text-xs text-gray-500">
             © 2025 Bingo Web App • Desenvolvido com React + Firebase
           </p>
+          <p className="text-xs text-gray-400 mt-1">
+            Criado por Joerverson Santos
+          </p>
         </div>
       </div>
     </div>

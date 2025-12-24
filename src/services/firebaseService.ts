@@ -64,6 +64,7 @@ export async function saveCard(card: BingoCard): Promise<string> {
     numbers: serializeNumbers(card.numbers), // Converte array 2D para flat array
     createdAt: dateToTimestamp(card.createdAt),
     registeredAt: card.registeredAt ? dateToTimestamp(card.registeredAt) : null,
+    userId: card.userId, // Adiciona userId
   };
   
   const docRef = await addDoc(collection(db, CARDS_COLLECTION), cardData);
@@ -79,10 +80,16 @@ export async function saveCards(cards: BingoCard[]): Promise<void> {
 }
 
 /**
- * Busca todas as cartelas
+ * Busca todas as cartelas de um usuário específico
  */
-export async function getAllCards(): Promise<BingoCard[]> {
-  const querySnapshot = await getDocs(collection(db, CARDS_COLLECTION));
+export async function getAllCards(userId: string): Promise<BingoCard[]> {
+  const q = query(
+    collection(db, CARDS_COLLECTION),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+  
+  const querySnapshot = await getDocs(q);
   
   return querySnapshot.docs.map(doc => {
     const data = doc.data();
@@ -91,23 +98,24 @@ export async function getAllCards(): Promise<BingoCard[]> {
       numbers: deserializeNumbers(data.numbers, 5), // Reconstrói matriz 2D
       createdAt: timestampToDate(data.createdAt),
       registeredAt: data.registeredAt ? timestampToDate(data.registeredAt) : undefined,
+      userId: data.userId,
     } as BingoCard;
   });
 }
 
 /**
- * Busca uma cartela pelo ID
+ * Busca uma cartela pelo ID (requer userId para segurança)
  */
-export async function getCardById(cardId: string): Promise<BingoCard | null> {
-  const cards = await getAllCards();
+export async function getCardById(cardId: string, userId: string): Promise<BingoCard | null> {
+  const cards = await getAllCards(userId);
   return cards.find(card => card.id === cardId) || null;
 }
 
 /**
- * Busca cartelas registradas (com nome)
+ * Busca cartelas registradas (com nome) de um usuário
  */
-export async function getRegisteredCards(): Promise<BingoCard[]> {
-  const cards = await getAllCards();
+export async function getRegisteredCards(userId: string): Promise<BingoCard[]> {
+  const cards = await getAllCards(userId);
   return cards.filter(card => card.registeredTo);
 }
 
@@ -116,22 +124,20 @@ export async function getRegisteredCards(): Promise<BingoCard[]> {
  */
 export async function registerCard(
   cardId: string,
-  playerName: string
+  playerName: string,
+  userId: string
 ): Promise<void> {
-  const cards = await getAllCards();
-  const card = cards.find(c => c.id === cardId);
-  
-  if (!card) {
-    throw new Error('Cartela não encontrada');
-  }
-  
-  // Encontra o documento no Firestore pelo ID da cartela
+  // Encontra o documento no Firestore pelo ID da cartela e userId
   const querySnapshot = await getDocs(
-    query(collection(db, CARDS_COLLECTION), where('id', '==', cardId))
+    query(
+      collection(db, CARDS_COLLECTION),
+      where('id', '==', cardId),
+      where('userId', '==', userId)
+    )
   );
   
   if (querySnapshot.empty) {
-    throw new Error('Documento da cartela não encontrado no Firestore');
+    throw new Error('Cartela não encontrada');
   }
   
   const docId = querySnapshot.docs[0].id;
@@ -146,9 +152,13 @@ export async function registerCard(
 /**
  * Remove o registro de uma cartela
  */
-export async function unregisterCard(cardId: string): Promise<void> {
+export async function unregisterCard(cardId: string, userId: string): Promise<void> {
   const querySnapshot = await getDocs(
-    query(collection(db, CARDS_COLLECTION), where('id', '==', cardId))
+    query(
+      collection(db, CARDS_COLLECTION),
+      where('id', '==', cardId),
+      where('userId', '==', userId)
+    )
   );
   
   if (querySnapshot.empty) return;
@@ -163,10 +173,15 @@ export async function unregisterCard(cardId: string): Promise<void> {
 }
 
 /**
- * Deleta todas as cartelas
+ * Deleta todas as cartelas de um usuário
  */
-export async function deleteAllCards(): Promise<void> {
-  const querySnapshot = await getDocs(collection(db, CARDS_COLLECTION));
+export async function deleteAllCards(userId: string): Promise<void> {
+  const q = query(
+    collection(db, CARDS_COLLECTION),
+    where('userId', '==', userId)
+  );
+  
+  const querySnapshot = await getDocs(q);
   const promises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
   await Promise.all(promises);
 }

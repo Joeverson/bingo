@@ -5,6 +5,7 @@ export interface BingoCard {
   createdAt: Date;
   registeredTo?: string; // Nome da pessoa que recebeu a cartela
   registeredAt?: Date;
+  userId: string; // ID do usuário que criou a cartela
 }
 
 export interface GameState {
