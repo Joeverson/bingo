@@ -291,6 +291,7 @@ function App() {
                 gameConfig={gameConfig}
                 generatedCards={generatedCards}
                 setGeneratedCards={setGeneratedCards}
+                existingCards={cards}
               />
             )}
             
