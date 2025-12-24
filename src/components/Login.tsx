@@ -1,5 +1,5 @@
 // src/components/Login.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
 import { LogIn } from 'lucide-react';

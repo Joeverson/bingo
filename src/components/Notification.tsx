@@ -1,5 +1,5 @@
 // src/components/Notification.tsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CheckCircle, XCircle, Info, X } from 'lucide-react';
 
 export type NotificationType = 'success' | 'error' | 'info';

@@ -1,5 +1,4 @@
 // src/components/BingoCard.tsx
-import React from 'react';
 import { BingoCard as BingoCardType } from '../types';
 
 interface BingoCardProps {

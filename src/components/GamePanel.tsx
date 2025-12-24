@@ -1,5 +1,5 @@
 // src/components/GamePanel.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Play, RotateCcw, Trophy } from 'lucide-react';
 import { BingoCard, GameConfig, CardProgress } from '../types';
 import { calculateAllProgress, findWinners } from '../utils/gameLogic';

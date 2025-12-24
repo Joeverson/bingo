@@ -1,5 +1,5 @@
 // src/components/CardGenerator.tsx
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Plus, Printer } from 'lucide-react';
 import { BingoCard as BingoCardType, GameConfig, PrintLayout } from '../types';
 import { generateBingoCards } from '../utils/cardGenerator';
@@ -22,7 +22,7 @@ export const CardGenerator: React.FC<CardGeneratorProps> = ({
 }) => {
   const [cardCount, setCardCount] = useState<number>(10);
   const [printLayout, setPrintLayout] = useState<PrintLayout>(2);
-  const printRef = React.useRef<HTMLDivElement>(null);
+  const printRef = useRef<HTMLDivElement>(null);
   
   const handlePrint = useReactToPrint({
     content: () => printRef.current,

@@ -1,5 +1,5 @@
 // src/components/PrintableCards.tsx
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { BingoCard as BingoCardType, PrintLayout } from '../types';
 import { BingoCard } from './BingoCard';
 

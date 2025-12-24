@@ -1,5 +1,5 @@
 // src/components/CardRegistry.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UserPlus, Search, X, Users } from 'lucide-react';
 import { BingoCard } from '../types';
 

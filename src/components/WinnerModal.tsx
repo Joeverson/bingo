@@ -1,5 +1,5 @@
 // src/components/WinnerModal.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trophy, X, CheckCircle } from 'lucide-react';
 import { BingoCard } from '../types';
 
@@ -52,8 +52,8 @@ export const WinnerModal: React.FC<WinnerModalProps> = ({
             </div>
             
             {/* Título BINGO com overflow */}
-            <div className="relative -mx-24 overflow-visible" style={{ marginLeft: '-20em' }}>
-              <h1 className="text-8xl md:text-[12rem] lg:text-[14rem] font-black text-white drop-shadow-2xl tracking-widest whitespace-nowrap">
+            <div className="relative -mx-24 overflow-visible" style={{ marginLeft: '-10em' }}>
+              <h1 className="text-8xl md:text-[10rem] lg:text-[11rem] font-black text-white drop-shadow-2xl tracking-widest whitespace-nowrap">
                 BINGOOO!
               </h1>
             </div>
